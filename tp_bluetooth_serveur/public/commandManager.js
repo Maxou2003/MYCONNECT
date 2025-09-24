@@ -17,64 +17,82 @@ function changeLedSate(state) {
 }
 
 function displayTempChart() {
-    var monGraphique = new Chart('myChart', {
-        type: 'line',
-        data: {
-            // Dans la ligne ci-dessous doit apparaitre les dates des différentes points à afficher sur le graphique, sous forme d'un tableau
-            labels: ['2023-09-25 16:48:37', '2023-09-25 16:48:43', '2023-09-25 16:48:49', '2023-09-25 16:48:55', '2023-09-25 16:49:01'],
-            datasets: [
-                {
-                    label: 'Température',
-                    // Dans la ligne ci-dessous doit apparaitre les valeurs des différents points de température à afficher sur le graphique, sous forme d'un tableau
-                    data: [22, 22.5, 22.7, 22.9, 22.6],
-                    yAxisID: 'A',
-                    backgroundColor: 'rgba(255, 238, 186, 0.4)',
-                    borderColor: 'rgba(255, 125, 0, 1)',
-                    borderWidth: 1,
-                    spanGaps: true
-                },
-                {
-                    label: 'led',
-                    // On pourrait aussi afficher l'historique de l'état de la led : "1" pour allumée et "0" pour éteinte
-                    data: [1, 0, 0, 1, 1],
-                    yAxisID: 'B',
-                    backgroundColor: 'rgba(184, 218, 255, 0.4)',
-                    borderColor: 'rgba(184, 218, 255, 1)',
-                    borderWidth: 1,
-                    spanGaps: true,
-                    steppedLine: 'before'
-                }
-            ]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    type: 'time',
-                    time: {
-                        unit: 'minute'
-                    }
-                }],
-                yAxes: [
+    getTemperatures().then((data) => {
+        // Chart.js comprend les objets Date
+        const labels = data.map(d => new Date(d.date));
+        const temperatures = data.map(d => d.temperature);
+
+        // S’il y a déjà un graphique, on le détruit avant d’en recréer un
+        if (window.monGraphique) {
+            window.monGraphique.destroy();
+        }
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        window.monGraphique = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
                     {
+                        label: 'Température',
+                        data: temperatures,
+                        yAxisID: 'A',
+                        backgroundColor: 'rgba(255, 238, 186, 0.4)',
+                        borderColor: 'rgba(255, 125, 0, 1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'minute',
+                            tooltipFormat: 'YYYY-MM-DD HH:mm:ss'
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date'
+                        }
+                    }],
+                    yAxes: [{
                         id: 'A',
                         ticks: {
                             beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Température (°C)'
                         }
-                    },
-                    {
-                        id: 'B',
-                        ticks: {
-                            min: 0,
-                            max: 2,
-                            beginAtZero: true
-                        }
-                    }
-                ]
+                    }]
+                }
             }
-        }
+        });
     })
+        .catch((err) => {
+            console.error('Erreur lors de la récupération des températures :', err);
+        });
+
+
 }
 
-
+async function getTemperatures() {
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/gettemperatures`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        const resp = await response.json();
+        return resp;
+    } catch (err) {
+        console.error('Erreur dans getTemperatures:', err);
+        throw err;
+    }
+}
