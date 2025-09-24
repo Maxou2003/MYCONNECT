@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contrôle Ampoule & Température</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" rel="stylesheet">
+  <script src="/commandManager.js" defer></script>
+  <script src="/ledStateObserver.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Contrôle Ampoule</h1>
+    <div class="controls">
+      <button onclick="changeLedSate('on')">Allumer</button>
+      <button onclick="changeLedSate('off')">Éteindre</button>
+      <button onclick="changeLedSate('switch')">Switcher</button>
+      <button onclick="changeLedSate('blink')">Clignoter</button>
+      <button onclick="displayTempHistory()">Voir Températures</button>
+    </div>
+  </div>
+    <div class="sidebar">
+    <h2> <i class="fas fa-plug"></i> MY CONNECT</h2>
+    <ul>
+      <li><a href="#"><i class="fas fa-lightbulb"></i>Ampoule</a></li>
+      <li><a href="#"><i class="fas fa-thermometer-half"></i>Températures</a></li>
+      <li><a href="#"><i class="fas fa-map-marker-alt"></i>Localisation</a></li>
+    </ul>
+  </div>
+  <div class="ampoule_container">
+    <div class="ampoule" id="ampoule" title="Clique pour allumer/éteindre">
+      <div class="verre">
+        <div class="filament"></div>
+      </div>
+      <div class="socle"></div>
+    </div>
+  </div>
+
+
+</body>
+</html>
