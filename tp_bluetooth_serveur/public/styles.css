@@ -1,3 +1,8 @@
+:root {
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+}
+
 body {
   font-family: sans-serif;
   background: #eef6ff;
@@ -8,61 +13,70 @@ body {
 .main-content {
   margin-left: 260px;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Controls Container */
 .controls-container {
-  max-width: 600px;
-  margin: auto;
-  background: white;
+  width: 600px;
+  margin: 40px auto;
+  background: #fff;
   padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-h1,
-h2 {
-  text-align: center;
+.controls-container h1 {
+  font-size: 1.6em;
+  margin-bottom: 20px;
+  color: #1f2937;
+  position: relative;
+}
+
+.controls-container h1::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: var(--primary);
+  margin: 8px auto 0;
+  border-radius: 3px;
 }
 
 .controls {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 15px;
 }
 
 button {
-  padding: 10px 20px;
+  padding: 12px 18px;
   border: none;
-  background: #007BFF;
-  color: white;
   font-size: 1em;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  color: #fff;
+  font-weight: 500;
+  background: var(--primary);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 button:hover {
-  background: #0056b3;
+  background: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+button:active {
+  transform: scale(0.97);
 }
 
-th,
-td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #ccc;
-}
-
-.hidden {
-  display: none;
-}
-
+/* Ampoule */
 .ampoule_container {
   padding-top: 100px;
   display: flex;
@@ -78,7 +92,6 @@ td {
   cursor: pointer;
 }
 
-/* Verre de l'ampoule */
 .ampoule .verre {
   position: relative;
   width: 80px;
@@ -93,7 +106,6 @@ td {
   transition: background 0.3s, box-shadow 0.3s;
 }
 
-/* Filament */
 .filament {
   position: absolute;
   top: 30px;
@@ -108,7 +120,6 @@ td {
     inset 0 -5px 5px rgba(0, 0, 0, 0.5);
 }
 
-/* Filaments latéraux */
 .filament::before,
 .filament::after {
   content: '';
@@ -136,7 +147,6 @@ td {
     inset 0 -2px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Socle de l'ampoule */
 .socle {
   width: 60px;
   height: 40px;
@@ -148,7 +158,6 @@ td {
     0 3px 8px rgba(0, 0, 0, 0.8);
 }
 
-/* Lumière allumée */
 .ampoule.on .verre {
   background: #fff5c1;
   box-shadow:
