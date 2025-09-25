@@ -5,7 +5,9 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:8000','http://127.0.0.1:8000', 'http://192.168.1.51:3000']
+}));
 
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -43,7 +45,7 @@ app.get('/localisation', function (req, res) {
 });
 
 
-app.get('/addtemperature', tempController.addTemp);
+app.get('/addtemperature' ,tempController.addTemp);
 
 app.get('/gettemperatures', tempController.getTemp);
 
