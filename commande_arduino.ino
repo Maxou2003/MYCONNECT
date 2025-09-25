@@ -11,6 +11,9 @@ bool blink = false;
 bool light_on = false;
 unsigned long last_blink = 0;
 unsigned long last_temp_export =0;
+unsigned long timer = 0;
+int timer_lenght;
+int timer_utilisation = 0; // 0 is unused, 1 is for light on and 2 for light off 
 
 
 void setup() {
@@ -29,6 +32,15 @@ void loop() {
     mavoieserie.print("05"+String(!light_on)+"!");
   }
 
+  if ((timer_utilisation != 0) && (millis() - timer > timer_lenght*1000)){
+    if (timer_utilisation == 1){
+      switchOnLight();
+    }else if (timer_utilisation == 2){
+      switchOffLight();
+    }
+    timer_utilisation = 0;
+  }
+
   if(millis() -last_temp_export>30000){
       temp = getTemperature(A0);
       last_temp_export = millis();
@@ -38,7 +50,8 @@ void loop() {
   }
 
   if (mavoieserie.available()) {
-    command = mavoieserie.read();
+    raw_command = mavoieserie.read();
+    command = raw_command[0]
     Serial.print("Commande recue : ");
     Serial.println(command);
     switch (command-'0') { 
@@ -73,6 +86,18 @@ void loop() {
 
       case 5:
         blink = true;
+        break;
+      case 6:
+        timer_lenght = raw_command[1];
+        timer = millis();
+        timer_utilisation = 1;
+        mavoieserie.print("06"+String(lightVal)+"!");
+        break;
+      case 7:
+        timer_lenght = raw_command[1];
+        timer = millis();
+        timer_utilisation = 2;
+        mavoieserie.print("07"+String(lightVal)+"!");
         break;
 
       default: 
