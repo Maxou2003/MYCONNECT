@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:8000','http://127.0.0.1:8000', 'http://192.168.1.51:3000']
+  origin: ['http://localhost:8000','http://127.0.0.1:8000', 'http://192.168.1.51:3000', 'http://192.168.10.20:8000']
 }));
 
 
@@ -19,7 +19,7 @@ const API_KEY = process.env.API_KEY;
 app.get('/api',(req, res, next) => {
   const authHeader = req.headers['authorization'];
   if (!authHeader || authHeader !== `Bearer ${API_KEY}`) {
-    console.log()
+    console.log(authHeader + " != " + API_KEY);
     return res.status(401).send('Unauthorized');
   }
   next();
