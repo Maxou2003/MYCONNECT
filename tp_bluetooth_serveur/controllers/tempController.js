@@ -4,6 +4,9 @@ const Temp = require('../models/Temp')
 exports.addTemp = async (req, res) => {
     try {
         temperature = req.query.temperature.replace('-', '.');
+        if (temperature < -20 || temperature > 50) {
+            return res.status(400).json({ error: 'Temperature out of range' });
+        }
         const temp = new Temp({
             date: new Date(Date.now()),
             temperature: temperature
