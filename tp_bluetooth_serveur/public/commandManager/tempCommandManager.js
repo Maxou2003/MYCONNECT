@@ -1,28 +1,36 @@
+let displayedElement = null;
+let currentPage = 1;
+const rowsPerPage = 5;
 
-function changeLedSate(state) {
-    fetch(`http://192.168.1.51:3000/led?state=${state}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-        .then(response => response.text())
-        .then(result => {
-            console.log('Réponse du serveur :', result);
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert('Une erreur est survenue');
-        });
+function commandManager(element) {
+    changeDisplayedElement(element);
+
+    if (element === 'myChart') {
+        displayTempChart();
+    }
+    else if (element === 'table-container') {
+        displayTempTable();
+    }
+}
+
+
+function changeDisplayedElement(element) {
+    if (displayedElement) {
+        displayedElement.style.display = 'none';
+    }
+    displayedElement = document.getElementById(element);
+
+    if (displayedElement) {
+        displayedElement.style.display = 'block';
+    }
 }
 
 function displayTempChart() {
     getTemperatures().then((data) => {
-        // Chart.js comprend les objets Date
+
         const labels = data.map(d => new Date(d.date));
         const temperatures = data.map(d => d.temperature);
 
-        // S’il y a déjà un graphique, on le détruit avant d’en recréer un
         if (window.monGraphique) {
             window.monGraphique.destroy();
         }
@@ -78,8 +86,59 @@ function displayTempChart() {
             console.error('Erreur lors de la récupération des températures :', err);
         });
 
-
 }
+
+
+function displayTempTable(page = 1) {
+    getTemperatures().then((data) => {
+        const table = document.getElementById('myTable');
+        const pagination = document.getElementById('pagination');
+        table.innerHTML = '';
+        pagination.innerHTML = '';
+
+        // Pagination
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const paginatedData = data.slice(start, end);
+
+        // En-tête
+        const header = table.createTHead();
+        const headerRow = header.insertRow(0);
+        ['Date', 'Température (°C)'].forEach(text => {
+            const cell = document.createElement('th');
+            cell.innerText = text;
+            headerRow.appendChild(cell);
+        });
+
+        // Corps du tableau
+        const body = table.createTBody();
+        paginatedData.forEach((entry) => {
+            const row = body.insertRow();
+            row.insertCell(0).innerText = new Date(entry.date).toLocaleString();
+            row.insertCell(1).innerText = entry.temperature.toFixed(2);
+        });
+
+        // Boutons de pagination
+        const pageCount = Math.ceil(data.length / rowsPerPage);
+        for (let i = 1; i <= pageCount; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.style.margin = "0 5px";
+            btn.onclick = () => {
+                currentPage = i;
+                displayTempTable(i);
+            };
+            if (i === page) {
+                btn.style.fontWeight = "bold";
+            }
+            pagination.appendChild(btn);
+        }
+    })
+        .catch((err) => {
+            console.error('Erreur lors de la récupération des températures :', err);
+        });
+}
+
 
 async function getTemperatures() {
     try {
