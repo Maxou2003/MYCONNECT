@@ -100,9 +100,13 @@ app.get('/led',function (req,res) {
         if (req.query.state == "switch"){
                 send_data("3")
         }else if (req.query.state == "on"){
-                send_data("1")
+                if ("time" in req.query){
+                        send_data("6"+req.query.time)
+                }else{send_data("1")}
         }else if (req.query.state == "off"){
-                send_data("2")
+                if ("time" in req.query){
+                        send_data("7"+req.query.time)
+                }else{send_data("2")}
         }else if (req.query.state == "blink") {
                 send_data("5")
         }
