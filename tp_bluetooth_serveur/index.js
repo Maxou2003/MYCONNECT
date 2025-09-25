@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const tempController = require('./controllers/tempController');
 const cors = require('cors');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 
@@ -11,6 +13,17 @@ app.use(cors({
 
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+const API_KEY = process.env.API_KEY;
+
+app.get('/api',(req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || authHeader !== `Bearer ${API_KEY}`) {
+    console.log()
+    return res.status(401).send('Unauthorized');
+  }
+  next();
+});
 
 app.get('/', function (req, res) {
 
@@ -45,7 +58,7 @@ app.get('/localisation', function (req, res) {
 });
 
 
-app.get('/addtemperature' ,tempController.addTemp);
+app.get('/api/addtemperature' ,tempController.addTemp);
 
 app.get('/gettemperatures', tempController.getTemp);
 
