@@ -1,2 +1,2 @@
-./tp_bluetooth_server/node_modules
-./.env
+**/node_modules
+**/.env

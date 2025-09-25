@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "dotenv": "^17.2.2",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "mongoose": "^8.18.2",
